@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{%block page_content%}
+<div class="page-header">
+    {% if user.avatar %}
+    <img class="img-rounded profile-thumbnail" src= "{{user.avatar}}" height="250" width="275">
+    {% else %}
+    <p><img class="img-rounded profile-thumbnail" src="/static/avatar/default.png"></p>
+    {% endif %}
+    <h1>{{user.username}}</h1>
+    {% if current_user.is_administrator() %}
+    <a class = "btn btn-danger"
+       href="{{url_for('main.edit_profile_admin',id=user.id)}}">
+        修改profile[Admin]
+    </a>
+    {% endif %}
+    {% if user.name or user.location %}
+    <p>
+        {% if user.name %}{{ user.name }}{%endif%}
+        {%if user.location %}
+        来自 <a href="http://maps.baidu.com/?q={{user.location}}">
+            {{ user.location}} 点击查看地图
+             </a>
+        {%endif%}
+    </p>
+    {%endif%}
+    {% if current_user.is_administrator()%}
+    <p><a href="mailto:{{ user.email }}">{{ user.email }}</a> </p>
+    {%endif%}
+    {%if user.about_me%}<p>{{user.about_me}}</p>{%endif%}
+        <a href="{{ url_for('main.edit_profile')}}"><button type="button" class="btn btn-primary">
+            修改简介</button></a>
+    <a href="{{ url_for('main.change_avatar')}}"><button type="button" class="btn btn-primary">
+        上传头像</button></a>
+    {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+        {% if not current_user.is_following(user)%}
+        <a href="{{url_for('main.follow',username=user.username)}}" class="btn btn-default">关注</a>
+        {% else %}
+        <a href="{{url_for('main.unfollow',username=user.username)}}" class="btn btn-default">取消关注</a>
+        {% endif %}
+    {% endif %}
+    <a href="{{url_for('.followers',username=user.username)}}">
+        粉丝:<span class="badge">{{ user.followers.count() -1 }}</span>
+    </a>
+    <a href="{{url_for('.followed_by',username=user.username)}}">
+        已关注:<span class="badge">{{ user.followed.count() -1}}</span>
+    </a>
+    {% if current_user.is_authenticated and user != current_user and
+        user.is_following(current_user) %}
+    <span class="label label-default">关注我</span>
+    {% endif %}
+    <p>
+        注册时间:{{ moment(user.member_since).format('L')}}.
+        上次登录 {{ moment(user.last_seen).fromNow()}}.
+    </p>
+    <h3>作者:{{user.username}}</h3>
+    {%include '_posts.html'%}
+</div>
+{%endblock%}

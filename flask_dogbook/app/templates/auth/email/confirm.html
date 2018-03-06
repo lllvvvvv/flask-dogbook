@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Dear {{user.username}}
+欢迎注册cheng博客
+
+点击链接激活认证你的账号：
+{{url_for('auth.confirm',token=token,_external=True)}}
+
+</body>
+</html>

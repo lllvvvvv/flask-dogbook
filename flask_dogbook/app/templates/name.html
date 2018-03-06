@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{%block page_content%}
+{%if name %}
+你好,{{name}}
+{% else %}
+你好，陌生人
+{%endif%}
+{%if not know%}第一次见到你
+{%else%}
+很高兴再次见到你
+{%endif%}
+{{ wtf.quick_form(form)}}
+
+{%endblock%}

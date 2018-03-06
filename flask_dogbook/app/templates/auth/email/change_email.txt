@@ -1,0 +1,6 @@
+
+Dear {{user.username}}
+欢迎使用cheng博客
+
+点击链接修改你的邮箱：
+{{url_for('auth.change_mail',token=token,_external=True)}}
